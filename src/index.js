@@ -1,6 +1,7 @@
 console.log('Hello, World!');
 
-const btnEl = document.getElementById('btn-dir-picker');
+const btnOpenDirEl = document.getElementById('btn-dir-picker');
+const btnOpenFileEl = document.getElementById('btn-file-picker');
 
 async function* getFilesRecursively(entry, currentPath) {
   if (entry.kind === "file") {
@@ -16,10 +17,10 @@ async function* getFilesRecursively(entry, currentPath) {
   }
 }
 
-const handleClick = async (ev) => {
+const handleOpenDirClick = async (ev) => {
   console.log({
     caption: 'clicked!',
-    btnEl,
+    btnOpenDirEl,
     getFilesRecursively
   })
   const directoryHandle = await window.showDirectoryPicker();
@@ -28,6 +29,28 @@ const handleClick = async (ev) => {
     fileTree.push(fileHandle);
   }
   console.log(fileTree);
+};
+
+const handleOpenFileClick = async (ev) => {
+  const [fileHandle] = await window.showOpenFilePicker({
+    types: [
+      {
+        description: 'Text Files',
+        accept: {
+          'text/plain': ['.txt', '.text'],
+        },
+      },
+      {
+        description: 'All Files',
+        accept: {
+          '*/*': ['.'],
+        },
+      },
+    ],
+  });
+
+  console.log({fileHandle})
 }
 
-btnEl.onclick = handleClick;
+btnOpenDirEl.onclick = handleOpenDirClick;
+btnOpenFileEl.onclick = handleOpenFileClick;

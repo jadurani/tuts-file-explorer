@@ -558,7 +558,8 @@ function hmrAccept(bundle, id) {
 
 },{}],"8lqZg":[function(require,module,exports) {
 console.log("Hello, World!");
-const btnEl = document.getElementById("btn-dir-picker");
+const btnOpenDirEl = document.getElementById("btn-dir-picker");
+const btnOpenFileEl = document.getElementById("btn-file-picker");
 async function* getFilesRecursively(entry, currentPath) {
     if (entry.kind === "file") {
         const file = await entry.getFile();
@@ -568,10 +569,10 @@ async function* getFilesRecursively(entry, currentPath) {
         }
     } else if (entry.kind === "directory") for await (const handle of entry.values())yield* getFilesRecursively(handle, `${currentPath}/${entry.name}`);
 }
-const handleClick = async (ev)=>{
+const handleOpenDirClick = async (ev)=>{
     console.log({
         caption: "clicked!",
-        btnEl,
+        btnOpenDirEl,
         getFilesRecursively
     });
     const directoryHandle = await window.showDirectoryPicker();
@@ -579,7 +580,34 @@ const handleClick = async (ev)=>{
     for await (const fileHandle of getFilesRecursively(directoryHandle, ""))fileTree.push(fileHandle);
     console.log(fileTree);
 };
-btnEl.onclick = handleClick;
+const handleOpenFileClick = async (ev)=>{
+    const [fileHandle] = window.showOpenFilePicker({
+        types: [
+            {
+                description: "Text Files",
+                accept: {
+                    "text/plain": [
+                        ".txt",
+                        ".text"
+                    ]
+                }
+            },
+            {
+                description: "All Files",
+                accept: {
+                    "*/*": [
+                        "."
+                    ]
+                }
+            }
+        ]
+    });
+    console.log({
+        fileHandle
+    });
+};
+btnOpenDirEl.onclick = handleOpenDirClick;
+btnOpenFileEl.onclick = handleOpenFileClick;
 
 },{}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequired89f")
 
